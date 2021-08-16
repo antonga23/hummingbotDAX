@@ -14,9 +14,6 @@ CENTRALIZED = True
 EXAMPLE_PAIR = "ETH-USD"
 DEFAULT_FEES = [0.001, 0.001]
 
-#RE_4_LETTERS_QUOTE = re.compile(r"^(\w{3,})(USDT|USDC|USDS|TUSD|BUSD|IDRT|BKRW|BIDR|BVND)$")
-#RE_3_LETTERS_QUOTE = re.compile(r"^(\w+)(\w{3})$")
-
 KEYS = {
     "openware_api_key":
         ConfigVar(key="openware_api_key",
@@ -44,42 +41,17 @@ KEYS = {
                   is_connect_key=True),
 }
 
-#def split_trading_pair(trading_pair: str) -> Optional[Tuple[str, str]]:
-#    try:
-#        m = RE_4_LETTERS_QUOTE.match(trading_pair)
-#        if m is None:
-#            m = RE_3_LETTERS_QUOTE.match(trading_pair)
-#        return m.group(1), m.group(2)
-#    # Exceptions are now logged as warnings in trading pair fetcher
-#    except Exception:
-#        return None
-
-
-#def convert_from_exchange_trading_pair(exchange_trading_pair: str) -> Optional[str]:
-#    result = None
-#    splitted_pair = split_trading_pair(exchange_trading_pair)
-#    if splitted_pair is not None:
-#        # Openware does not split basequote (btcusdt)
-#        base_asset, quote_asset = splitted_pair
-#        result = f"{base_asset.upper()}-{quote_asset.upper()}"
-#    return result
-
-## TESTED
-#def convert_to_exchange_trading_pair(hb_trading_pair: str) -> str:
-#    # Openware does not split 'basequote' (btcusdt) and must be lowercase.
-#    return hb_trading_pair.replace("-", "").lower()
-## TESTED
-
-
 def split_trading_pair(trading_pair: str) -> Optional[Tuple[str, str]]:
 #    return trading_pair.replace('usdc', ''), 'usdc'
     try:
-        #tpstring = global_config_map.get("trading_pair_splitter").value.lower()
-        tpstring = "ETH|EUR|USD".lower()
+        tpstring = global_config_map.get("trading_pair_splitter").value.lower()
+        #print("tpstring:!!!!!!!", tpstring)
+        #tpstring = "ETH|EUR|USD".lower()
         trading_pair_splitter = re.compile(rf"^(\w+)({tpstring})$")
         m = trading_pair_splitter.match(trading_pair.lower())
         return m.group(1), m.group(2)
     except Exception as e:
+        print("ERROR: Trading pair could not be split")
         return None
 
 
